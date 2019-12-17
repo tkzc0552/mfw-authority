@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: com.zhm:mfw-tool:1.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/zhm/mfw-tool/1.0/mfw-tool-1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

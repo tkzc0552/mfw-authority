@@ -1,0 +1,93 @@
+buildscript{
+    ext{
+        springBootVersion='2.2.0.RELEASE'
+        springfox_version='2.9.2'
+    }
+    repositories{
+        mavenLocal()
+        maven { url "http://repo1.maven.org/maven2" }
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies{
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: "idea"
+apply plugin: 'maven' // 引入maven插件
+apply plugin: 'org.springframework.boot'
+
+group 'com.zhm'
+version '1.0'
+buildDir='target'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    maven { url "http://repo1.maven.org/maven2" }
+    maven { url "https://plugins.gradle.org/m2/" }
+}
+apply from: "${rootDir}/gradle/java.gradle"
+dependencies {
+    runtime("com.alibaba:druid:1.1.9")
+    compileOnly("org.springframework.boot:spring-boot-starter:$springBootVersion")
+    compileOnly("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
+    compileOnly("org.springframework.boot:spring-boot-starter-log4j2:$springBootVersion")
+    compile('org.springframework.boot:spring-boot-starter')
+    compile('org.springframework.boot:spring-boot-starter-cache')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-data-redis')
+    compile('org.springframework.boot:spring-boot-starter-log4j2')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-validation')
+    compile("io.springfox:springfox-swagger2:$springfox_version")
+    compile("com.alibaba:druid-spring-boot-starter:1.1.9")
+    compile("commons-codec:commons-codec:1.11")
+    compile("com.alibaba:fastjson:1.2.36")
+    compile("com.squareup.okhttp3:okhttp:3.10.0")
+    compile("org.hibernate:hibernate-envers:5.2.17.Final")
+    compile("org.hibernate:hibernate-core:5.2.17.Final")
+    compile("org.hibernate:hibernate-ehcache:5.2.17.Final")
+    compile group: 'commons-configuration', name: 'commons-configuration', version: '1.10'
+    compile('com.zhm:mfw-tool:1.0')
+
+}
+
+
+bootJar.enabled = false // 不要求启动项目，不需要main方法
+jar.enabled = true // 需要在build/libs下生成jar文件
+apply plugin: "maven-publish"
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier "sources" //定义一个标志 (生成的jar包后面加上sources, 如: jlib-2.2.11-sources.jar)
+}
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact sourceJar
+        }
+    }
+    //定义目标仓库 (包所存放的地方)
+    repositories {
+        mavenLocal()
+    }
+}
+
+//上传的私服上
+/*
+repositories {
+    maven {
+        if (project.version.endsWith('-SNAPSHOT')) {
+            url = "快照版本的nexus仓库地址"
+        } else {
+            url = "release版本的仓库地址"
+        }
+        credentials {
+            username 'nexus仓库用户名'
+            password 'nexus仓库密码'
+        }
+    }
+}*/

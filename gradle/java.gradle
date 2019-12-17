@@ -1,0 +1,143 @@
+apply plugin: 'java'
+sourceSets{
+    main{
+        java{
+            srcDirs=['src/main/java']
+        }
+        resources{
+            srcDirs=['src/main/resources']
+        }
+    }
+    test{
+        java{
+            srcDirs=['src/test/java']
+        }
+        resources{
+            srcDirs=['src/test/resources']
+        }
+    }
+}
+compileJava{
+    sourceCompatibility=JavaVersion.VERSION_1_8
+    targetCompatibility=JavaVersion.VERSION_1_8
+}
+compileJava.options*.compilerArgs=[
+        "-Xlint:unchecked","-Xlint:options"
+]
+compileTestJava{
+    sourceCompatibility=JavaVersion.VERSION_1_8
+    targetCompatibility=JavaVersion.VERSION_1_8
+}
+compileTestJava.options*.compilerArgs=[
+        "-Xlint:unchecked","-Xlint:options"
+]
+[compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
+
+configurations{
+    all{
+        all { config ->
+            config.exclude group: "org.apache.geronimo.specs"
+            config.exclude group: "org.jboss.spec.javax.transaction"
+            config.exclude group: "org.springframework.boot", module:"spring-boot-starter-logging"
+            config.exclude group: "org.apache.tomcat", module:"tomcat-jdbc"
+            config.exclude group: "com.vaadin.external.google"
+            config.exclude group: "com.google.code.findbugs"
+            //循环一个个的依赖库
+            resolutionStrategy.eachDependency { details ->
+                //如果这个依赖库群组的名字是org.ow2.asm且其名字不是以asm开头的
+                if (details.requested.group == 'org.ow2.asm' && details.requested.name == 'asm') {
+                    //这里指定需要统一的依赖版本
+                    details.useVersion asm_version
+                } else if (details.requested.group == 'org.codehaus.mojo' && details.requested.name == 'animal-sniffer-annotations') {
+                    details.useVersion animal_sniffer_annotations_version
+                } else if (details.requested.group == 'org.aspectj') {
+                    details.useVersion aspectj_version
+                } else if (details.requested.group == 'net.bytebuddy') {
+                    details.useVersion bytebuddy_version
+                } else if (details.requested.group == 'org.checkerframework') {
+                    details.useVersion checker_version
+                } else if (details.requested.group == 'com.fasterxml' && details.requested.name == 'classmate') {
+                    details.useVersion classmate_version
+                } else if (details.requested.group == 'commons-codec' && details.requested.name == 'commons-codec') {
+                    details.useVersion commons_codec_version
+                } else if (details.requested.group == 'commons-collections' && details.requested.name == 'commons-collections') {
+                    details.useVersion commons_collections_version
+                } else if (details.requested.group == 'commons-lang' && details.requested.name == 'commons-lang') {
+                    details.useVersion commons_lang_version
+                } else if (details.requested.group == 'org.apache.commons') {
+                    if(details.requested.name == 'commons-collections4') {
+                        details.useVersion commons_collections4_version
+                    } else if(details.requested.name == 'commons-compress') {
+                        details.useVersion commons_compress_version
+                    } else if(details.requested.name == 'commons-lang3') {
+                        details.useVersion commons_lang3_version
+                    } else if (details.requested.name == 'commons-pool2') {
+                        details.useVersion commons_pool2_version
+                    }
+                } else if (details.requested.group == 'com.github.virtuald' && details.requested.name == 'curvesapi') {
+                    details.useVersion curvesapi_version
+                } else if (details.requested.group == 'org.dom4j' && details.requested.name == 'dom4j') {
+                    details.useVersion dom4j2_version
+                } else if (details.requested.group == 'com.alibaba' && details.requested.name.startsWith('druid')) {
+                    details.useVersion druid_version
+                } else if (details.requested.group == 'com.google.errorprone') {
+                    details.useVersion errorprone_version
+                } else if (details.requested.group == 'org.hibernate') {
+                    if(details.requested.name == 'hibernate-validator') {
+                        details.useVersion hibernate_validator_version
+                    } else {
+                        details.useVersion hibernate_version
+                    }
+                } else if (details.requested.group == 'org.apache.httpcomponents') {
+                    if(details.requested.name == 'httpclient') {
+                        details.useVersion httpclient_version
+                    } else if (details.requested.name == 'httpcore' || details.requested.name == 'httpcore-nio') {
+                        details.useVersion httpcore_version
+                    }
+                } else if (details.requested.group == 'com.ibm.icu') {
+                    details.useVersion icu_version
+                } else if (details.requested.group.startsWith('com.fasterxml.jackson')) {
+                    details.useVersion jackson_version
+                } else if (details.requested.group == 'org.javassist') {
+                    details.useVersion javassist_version
+                } else if (details.requested.group == 'org.jboss' && details.requested.name == 'jandex') {
+                    details.useVersion jboss_jandex_version
+                } else if (details.requested.group == 'org.jboss.logging') {
+                    details.useVersion jboss_logging_version
+                } else if (details.requested.group == 'org.jdom' && details.requested.name == 'jdom2') {
+                    details.useVersion jdom2_version
+                } else if (details.requested.group == 'com.google.j2objc') {
+                    details.useVersion j2objc_version
+                } else if (details.requested.group == 'org.apache.logging.log4j') {
+                    details.useVersion log4j2_version
+                } else if (details.requested.group == 'com.google.code.gson') {
+                    details.useVersion gson_version
+                } else if (details.requested.group == 'com.google.guava') {
+                    details.useVersion guava_version
+                } else if (details.requested.group == 'org.mapstruct') {
+                    details.useVersion mapstruct_version
+                } else if (details.requested.group == 'org.slf4j') {
+                    details.useVersion slf4j_version
+                } else if (details.requested.group == "org.yaml" && details.requested.name == "snakeyaml") {
+                    details.useVersion snakeyaml_version
+                } else if (details.requested.group == 'org.springframework') {
+                    details.useVersion spring_version
+                } else if (details.requested.group == 'org.springframework.boot') {
+                    details.useVersion spring_boot_version
+                } else if (details.requested.group == 'org.springframework.data') {
+                    if(details.requested.name == 'spring-data-commons') {
+                        details.useVersion spring_data_commons_version
+                    } else if (details.requested.name == 'spring-data-jpa') {
+                        details.useVersion spring_data_jpa_version
+                    } else if (details.requested.name == 'spring-data-redis') {
+                        details.useVersion spring_data_redis_version
+                    }
+                } else if (details.requested.group == 'org.springframework.session') {
+                    details.useVersion spring_session_version
+                } else if (details.requested.group == "io.swagger") {
+                    details.useVersion swagger_version
+                }
+            }
+        }
+    }
+}
